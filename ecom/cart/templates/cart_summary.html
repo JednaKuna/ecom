@@ -1,7 +1,18 @@
 {% extends 'base.html' %} {% block content %}
 
+<!-- Header-->
+<header class="bg-dark py-5">
+  <div class="container px-4 px-lg-5 my-5">
+    <div class="text-center text-white">
+      <h1 class="display-4 fw-bolder">Shopping Cart</h1>
+      <p class="lead fw-normal text-white-50 mb-0">View your shopping cart</p>
+    </div>
+  </div>
+</header>
+<br />
 <div class="container">
-  <br />
+  <!-- If cart is not empty-->
+  {% if cart_products %} {% for product in cart_products %}
   <div class="card mb-3">
     <div class="row g-0">
       <div class="col-md-4">
@@ -34,6 +45,11 @@
               <div class="col-md-2">Quantity:</div>
               <div class="col-md-2">
                 <select class="form-select" id="qty-cart">
+                  {% for key, value in quantities.items %} {% if key ==
+                  product.id|slugify %}
+                  <option selected>{{ value }}</option>
+                  {{ endif }} {% endfor %}
+
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -44,42 +60,14 @@
             </div>
             <br /><br />
             <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
-            <button
-              type="button"
-              value="{{ product.id }}"
-              class="btn btn-secondary"
-              id="add-cart"
-            >
-              Add To Cart
-            </button>
           </center>
         </div>
       </div>
     </div>
   </div>
+  <br />
+  {% endfor %} {% else %} There is nothing in your cart. {% endif %}
 </div>
+<br /><br /><br /><br />
 
-<script>
-  // Check if button is pressed
-  $(document).on('click', '#add-cart', function(e){
-    e.preventDefault();
-    $.ajax({
-      type: 'POST',
-      url: '{% url 'cart_add' %}',
-      data: {
-        product_id: $('#add-cart').val(),
-        product_qty: $('#qty-cart option:selected').text(),
-        csrfmiddlewaretoken: '{{ csrf_token }}',
-        action: 'post'
-      },
-      success: function(json){
-        //console.log(json)
-        document.getElementById('cart_quantity').textContent = json.qty
-      },
-      error: function(xhr, errmsg, err){
-
-      }
-    });
-  })
-</script>
-{%endblock%}
+{% endblock %}
