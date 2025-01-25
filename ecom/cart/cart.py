@@ -43,4 +43,26 @@ class Cart():
         quantities = self.cart
         
         return quantities
+    
+    def update(self, product, quantity):
+        product_id = str(product)
+        product_qty = int(quantity)
         
+        # Get cart
+        ourcart = self.cart
+        # Update cart/dictionary
+        ourcart[product_id] = product_qty
+        
+        self.session.modified = True
+        
+        thing = self.cart
+        
+        return thing
+    
+    def delete(self, product):
+        product_id = str(product)
+        # Delete from dictionary/cart
+        if product_id in self.cart:
+            del self.cart[product_id]
+        
+        self.session.modified = True
